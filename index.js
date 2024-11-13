@@ -11,9 +11,11 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 const userRoutes = require("./routes/User-Route.js");
+const courseRoutes = require("./routes/Course-Routes.js")
 
 // Backend Routes
 app.use("/users", userRoutes)
+app.use("/courses", courseRoutes)
 
 
 // MongoDB Connection
