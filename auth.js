@@ -11,3 +11,31 @@ module.exports.createAccessToken = (user) => {
 
     return jwt.sign(data, process.env.JWT_SECRET_KEY, {});
 };
+
+module.exports.verify = (req, res, next) => {
+    let token = req.headers.authorization;
+
+    if(typeof token === "undefined"){
+        return res.send({
+            code: "TOKEN_NOT_DETECTED",
+            message: "Please login to do this action"
+        })
+    }else{
+        console.log(token);
+        token = token.slice(7, token.length);
+
+        jwt.verify(token, process.env.JWT_SECRET_KEY, 
+            function(err, decodedToken){
+                if(err){
+                    return res.send({
+                        auth: "Authentication Failed!",
+                        message: err.message
+                    })
+                }else{
+                    req.user = decodedToken;
+                    next();
+                }
+            }
+        )
+    }
+}

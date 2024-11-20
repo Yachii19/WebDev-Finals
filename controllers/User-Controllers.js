@@ -1,6 +1,7 @@
 const User = require("../models/User-Model.js");
 const bcryptjs = require("bcryptjs");
 const auth = require("../auth.js");
+const Enroll = require("../models/Enrollment-Model.js");
 
 module.exports.registerUser = (req, res) => {
     let newUser = new User({
@@ -90,6 +91,32 @@ module.exports.getProfile = (req, res) => {
             return res.send({
                 code: "USER-SUCCESSFULLY-FOUND",
                 message: "One User has been found",
+                result: result
+            })
+        }
+    })
+}
+
+// Enroll a user
+module.exports.enroll = (req, res) => {
+    const {id} = req.user;
+    
+    let newEnrollment = new Enroll({
+        userId: id,
+        enrolledCourse: req.body.enrolledCourse,
+        totalPrice: req.body.totalPrice
+    })
+
+    return newEnrollment.save().then((result, err) => {
+        if(err){
+            res.send({
+                code: "ENROLLMENT-FAILED",
+                message: "There is a problem during your enrollment, please try again!"
+            })
+        }else{
+            res.send({
+                code: "ENROLLMENT-SUCCESS",
+                message: "Congratulations, you are now enrolled!",
                 result: result
             })
         }
